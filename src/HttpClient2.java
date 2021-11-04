@@ -7,32 +7,34 @@ import java.net.Socket;
 public class HttpClient2 {
     public static void main(String[] args) throws Exception {
         String hostname = "stud.fh-wedel.de";
-        InetAddress wedelAdresse = InetAddress.getByName(hostname);
-        Socket socke = new Socket(wedelAdresse, 80);
+        InetAddress InternetAdresse = InetAddress.getByName(hostname);
+        Socket verbindung = new Socket(InternetAdresse, 80);
         boolean autoflush = true;
-        PrintWriter out = new PrintWriter(socke.getOutputStream(), autoflush);
-        BufferedReader in = new BufferedReader( new InputStreamReader(socke.getInputStream()));
+        //Output definieren
+        PrintWriter sender = new PrintWriter(verbindung.getOutputStream(), autoflush);
+        //Input definieren
+        BufferedReader empfaenger = new BufferedReader( new InputStreamReader(verbindung.getInputStream()));
 
         //Send Request
-        out.println("GET / HTTP/1.1");
-        out.println("Connection: Close");
-        out.println("Host: "+ hostname);
-        out.println();
+        sender.println("GET / HTTP/1.1");
+        sender.println("Host: "+ hostname);
+        sender.println("Connection: Close");
+        sender.println();
 
         //read Response
         boolean loop = true;
-        StringBuilder homo = new StringBuilder(8096);
+        StringBuilder schreiber = new StringBuilder(8096);
         while (loop){
-            if (in.ready()) {
+            if (empfaenger.ready()) {
                 int i = 0;
                 while (i != -1) {
-                    i = in.read();
-                    homo.append((char) i);
+                    i = empfaenger.read();
+                    schreiber.append((char) i);
                 }
                 loop = false;
             }
         }
-        System.out.println(homo.toString());
-        socke.close();
+        System.out.println(schreiber.toString());
+        verbindung.close();
     }
 }
